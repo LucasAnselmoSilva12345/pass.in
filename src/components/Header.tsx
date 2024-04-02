@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
 import nlwUniteIconImg from '../assets/nlw-unite-icon.svg';
+import { NavLink } from './Nav-Link';
 
 export function Header() {
   return (
@@ -8,16 +8,8 @@ export function Header() {
 
       <nav>
         <ul className="flex items-center gap-5">
-          <li>
-            <Link to="/" className="font-medium text-sm text-zinc-300">
-              Eventos
-            </Link>
-          </li>
-          <li>
-            <Link to="/" className="font-medium text-sm">
-              Participantes
-            </Link>
-          </li>
+          <NavLink redirect="/event" title="Eventos" style="text-zinc-300" />
+          <NavLink redirect="/subscriber" title="Participantes" />
         </ul>
       </nav>
     </header>
