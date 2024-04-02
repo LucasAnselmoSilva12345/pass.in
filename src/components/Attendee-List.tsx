@@ -11,6 +11,7 @@ import { Table } from './table/Table';
 import { TableHeader } from './table/Table-Header';
 import { TableCell } from './table/Table-Cell';
 import { TableRow } from './table/Table-Row';
+import { attendees } from '@/data/attendees';
 
 export function AttendeeList() {
   return (
@@ -45,26 +46,26 @@ export function AttendeeList() {
           </tr>
         </thead>
         <tbody>
-          {Array.from({ length: 8 }).map((_, index) => {
+          {attendees.map((attendee) => {
             return (
-              <TableRow key={index}>
+              <TableRow key={attendee.id}>
                 <TableCell>
                   <input
                     type="checkbox"
                     className="size-4 bg-black/20 rounded border border-white/10"
                   />
                 </TableCell>
-                <TableCell>45895</TableCell>
+                <TableCell>{attendee.id}</TableCell>
                 <TableCell>
                   <div className="flex flex-col gap-1">
                     <span className="font-semibold text-white">
-                      Lucas Anselmo
+                      {attendee.name}
                     </span>
-                    <span>lucasanselmodasilva02@gmail.com</span>
+                    <span>{attendee.email}</span>
                   </div>
                 </TableCell>
-                <TableCell>4 dias atrás</TableCell>
-                <TableCell>2 dias atrás</TableCell>
+                <TableCell>{attendee.createdAt.toISOString()}</TableCell>
+                <TableCell>{attendee.createdInAt.toISOString()}</TableCell>
                 <TableCell>
                   <IconButton transparent>
                     <MoreHorizontal className="size-4" />
