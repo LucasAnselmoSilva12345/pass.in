@@ -6,12 +6,16 @@ import {
   ChevronRight,
   ChevronsRight,
 } from 'lucide-react';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { IconButton } from './Icon-Button';
 import { Table } from './table/Table';
 import { TableHeader } from './table/Table-Header';
 import { TableCell } from './table/Table-Cell';
 import { TableRow } from './table/Table-Row';
 import { attendees } from '@/data/attendees';
+
+dayjs.extend(relativeTime);
 
 export function AttendeeList() {
   return (
@@ -64,8 +68,9 @@ export function AttendeeList() {
                     <span>{attendee.email}</span>
                   </div>
                 </TableCell>
-                <TableCell>{attendee.createdAt.toISOString()}</TableCell>
-                <TableCell>{attendee.createdInAt.toISOString()}</TableCell>
+                <TableCell>{dayjs().to(attendee.createdAt)}</TableCell>
+                <TableCell>{dayjs().to(attendee.createdInAt)}</TableCell>
+
                 <TableCell>
                   <IconButton transparent>
                     <MoreHorizontal className="size-4" />
