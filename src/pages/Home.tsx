@@ -1,3 +1,9 @@
+import { AttendeeList } from '@/components/Attendee-List';
+
 export function Home() {
-  return <h1>Hello World</h1>;
+  return (
+    <section>
+      <AttendeeList />
+    </section>
+  );
 }
