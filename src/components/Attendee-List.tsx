@@ -14,10 +14,31 @@ import { TableHeader } from './table/Table-Header';
 import { TableCell } from './table/Table-Cell';
 import { TableRow } from './table/Table-Row';
 import { attendees } from '@/data/attendees';
+import { useState } from 'react';
 
 dayjs.extend(relativeTime);
 
 export function AttendeeList() {
+  const [page, setPage] = useState(1);
+
+  const totalPages = Math.ceil(attendees.length / 10);
+
+  function goToFirstPage() {
+    setPage(1);
+  }
+
+  function goToPreviousPage() {
+    setPage(page - 1);
+  }
+
+  function goToNextPage() {
+    setPage(page + 1);
+  }
+
+  function goToLastPage() {
+    setPage(totalPages);
+  }
+
   return (
     <section className="w-full lg:max-w-[1216px] mx-auto px-5">
       <div className="flex items-center gap-3">
@@ -50,7 +71,7 @@ export function AttendeeList() {
           </tr>
         </thead>
         <tbody>
-          {attendees.map((attendee) => {
+          {attendees.slice((page - 1) * 10, page * 10).map((attendee) => {
             return (
               <TableRow key={attendee.id}>
                 <TableCell>
@@ -82,21 +103,25 @@ export function AttendeeList() {
         </tbody>
         <tfoot>
           <tr>
-            <TableCell colSpan={3}>Mostrando 10 de 224 itens</TableCell>
+            <TableCell colSpan={3}>
+              Mostrando 10 de {attendees.length} itens
+            </TableCell>
             <TableCell customStyle="text-right" colSpan={3}>
               <div className="inline-flex items-center gap-8">
-                <span>Página 1 de 22</span>
+                <span>
+                  Página {page} de {totalPages}
+                </span>
                 <div className="flex gap-1.5">
-                  <IconButton>
+                  <IconButton onClick={goToFirstPage}>
                     <ChevronsLeft className="size-4" />
                   </IconButton>
-                  <IconButton>
+                  <IconButton onClick={goToPreviousPage}>
                     <ChevronLeft className="size-4" />
                   </IconButton>
-                  <IconButton>
+                  <IconButton onClick={goToNextPage}>
                     <ChevronRight className="size-4" />
                   </IconButton>
-                  <IconButton>
+                  <IconButton onClick={goToLastPage}>
                     <ChevronsRight className="size-4" />
                   </IconButton>
                 </div>
