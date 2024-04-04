@@ -13,15 +13,37 @@ import { Table } from './table/Table';
 import { TableHeader } from './table/Table-Header';
 import { TableCell } from './table/Table-Cell';
 import { TableRow } from './table/Table-Row';
-import { attendees } from '@/data/attendees';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 dayjs.extend(relativeTime);
 
+interface AttendeeProps {
+  id: string;
+  name: string;
+  email: string;
+  checkedInAt: string | null;
+  createdAt: string;
+}
+
 export function AttendeeList() {
   const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [attendees, setAttendees] = useState<AttendeeProps[]>([]);
 
-  const totalPages = Math.ceil(attendees.length / 10);
+  const totalPages = Math.ceil(total / 10);
+
+  const eventId = '9e9bd979-9d10-4915-b339-3786b1634f33';
+  useEffect(() => {
+    fetch(
+      `http://localhost:3333/events/${eventId}/attendees?pageIndex=${page - 1}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setAttendees(data.attendees);
+        setTotal(data.total);
+      });
+  }, [page]);
 
   function goToFirstPage() {
     setPage(1);
@@ -71,7 +93,7 @@ export function AttendeeList() {
           </tr>
         </thead>
         <tbody>
-          {attendees.slice((page - 1) * 10, page * 10).map((attendee) => {
+          {attendees.map((attendee) => {
             return (
               <TableRow key={attendee.id}>
                 <TableCell>
@@ -90,7 +112,13 @@ export function AttendeeList() {
                   </div>
                 </TableCell>
                 <TableCell>{dayjs().to(attendee.createdAt)}</TableCell>
-                <TableCell>{dayjs().to(attendee.createdInAt)}</TableCell>
+                <TableCell>
+                  {attendee.checkedInAt === null ? (
+                    <span className="text-zinc-400">Not made check-in</span>
+                  ) : (
+                    dayjs().to(attendee.checkedInAt)
+                  )}
+                </TableCell>
 
                 <TableCell>
                   <IconButton transparent>
@@ -104,7 +132,7 @@ export function AttendeeList() {
         <tfoot>
           <tr>
             <TableCell colSpan={3}>
-              Mostrando 10 de {attendees.length} itens
+              Mostrando {attendees.length} de {total} itens
             </TableCell>
             <TableCell customStyle="text-right" colSpan={3}>
               <div className="inline-flex items-center gap-8">
