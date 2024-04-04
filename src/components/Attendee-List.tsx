@@ -13,7 +13,7 @@ import { Table } from './table/Table';
 import { TableHeader } from './table/Table-Header';
 import { TableCell } from './table/Table-Cell';
 import { TableRow } from './table/Table-Row';
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 dayjs.extend(relativeTime);
 
@@ -26,24 +26,35 @@ interface AttendeeProps {
 }
 
 export function AttendeeList() {
+  const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [attendees, setAttendees] = useState<AttendeeProps[]>([]);
 
   const totalPages = Math.ceil(total / 10);
 
-  const eventId = '9e9bd979-9d10-4915-b339-3786b1634f33';
   useEffect(() => {
-    fetch(
-      `http://localhost:3333/events/${eventId}/attendees?pageIndex=${page - 1}`
-    )
+    const eventId = '9e9bd979-9d10-4915-b339-3786b1634f33';
+    const url = new URL(`http://localhost:3333/events/${eventId}/attendees`);
+    url.searchParams.set('pageIndex', String(page - 1));
+
+    if (search.length > 0) {
+      url.searchParams.set('query', search);
+    }
+
+    fetch(url)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
         setAttendees(data.attendees);
         setTotal(data.total);
       });
-  }, [page]);
+  }, [page, search]);
+
+  function onSearchInputChanged(event: ChangeEvent<HTMLInputElement>) {
+    setSearch(event.target.value);
+    setPage(1);
+  }
 
   function goToFirstPage() {
     setPage(1);
@@ -69,9 +80,10 @@ export function AttendeeList() {
         <div className="w-full lg:w-72 px-3 py-1.5 border border-white/10 rounded-lg flex items-center gap-3">
           <Search className="size-4 text-emerald-300" />
           <input
-            className="bg-transparent border-0 p-0 text-sm flex-1 outline-none"
+            className="bg-transparent border-0 p-0 text-sm flex-1 outline-none focus:ring-0"
             type="text"
             placeholder="Buscar participante"
+            onChange={onSearchInputChanged}
           />
         </div>
       </div>
